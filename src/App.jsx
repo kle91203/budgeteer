@@ -6,9 +6,11 @@ function App() {
 
   return (
     <>
+      <div><b>Recuring Expences</b></div>
       <RecuringExpences/>
       <br/>
       <br/>
+      <div><b>Daily Expences</b></div>
       <DailyExpences/>
     </>
   )
