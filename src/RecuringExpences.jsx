@@ -1,16 +1,20 @@
 export default function RecuringExpences() {
 
     const expences = [
-        {name: "electricity", amount: 10},
+        {name: "electricity", amount: 10, paid: true},
         {name: "gas", amount: 20},
-        {name: "mortgage", amount: 100},
-        {name: "phones", amount: 40},
+        {name: "mortgage", amount: 100, paid: true},
+        {name: "phones", amount: 40, paid: true},
         {name: "car loan", amount: 50},
         {name: "water", amount: 30}
     ]
 
     return (<>
-        {expences.map((e) => <div key={e.name}>{e.name} {e.amount}</div>)}
+        {expences.map((e) => 
+            <div key={e.name}>
+                <input checked={e.paid} type="checkbox"/>
+                {e.name} {e.amount}
+            </div>)}
     </>)
 
 }
