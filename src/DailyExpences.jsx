@@ -1,5 +1,4 @@
 import Expence from "./Expence"
-import DropdownExampleSelection from "./DropdownExampleSelection"
 
 export default function ICanNameThisAnything() {
 
@@ -15,13 +14,11 @@ export default function ICanNameThisAnything() {
 
     return (<>
         {
-<>
-{/* <DropdownExampleSelection/> */}
-</>
-            // expences.map((e) => 
-            // <Expence key={e.datetime} id={e.datetime} category={e.name} description="todo" amount={e.amount}/>
-            // // <Expence amount="e" key="qwer" category="q" description="todo"   />
-            // )
+            expences.map((e) => 
+                <>
+                    <Expence amount={e.amount} key={e.datetime} category={e.name} description={e.name}   />
+                </>
+            )
         }
     </>)
 

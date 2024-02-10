@@ -1,7 +1,7 @@
 
 
 
-props is sthe only param. you can destructure them by adding curly braces
+Props is sthe only param. Destructure them for convenience
 
 can't use key as a prop
 the key goes on the component, not on the html element (i.e. div) in the component
@@ -10,4 +10,33 @@ From adding the semantic-ui Dropdown into the Expence component. Whether it was 
 Event if it was the only thing in the Expence component
 chunk-ZKMK3N6I.js?v=7dd40ce1:519 Warning: findDOMNode is deprecated in StrictMode. findDOMNode was passed an instance of RefFindNode2 which is inside StrictMode. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node
 but removing all my code and just putting in the example code for Dropdown still has that error
+
+
+
+why can i use the Expence2 component when it's not being imported and not get an exception?
+    there was an exception. it was visible in the console.
+
+------------------
+
+i pulled in parts of FrontEndReact that had drop downs. They didn't work. 
+I tried to whittle down FrontEndReact to just the drop down in Config > Machines > New but there's a lot of code in there, it's very complex, and it's impractical to simplify it to the point where you can see what css is affecting the drop down.
+
+
+Other versions of Expence that I tried but the root cause was not reading the intro docs for semantic
+    {/* <Expence2 key={e.datetime} id={e.datetime} category={e.name} description="todo" amount={e.amount}/>
+    <Expence3 key={e.datetime} id={e.datetime} category={e.name} description="todo" amount={e.amount}/> */}
+
+
+------------------------------------------------
+------------------------------------------------ fields on Event that I'm interested in
+------------------------------------------------
+  console.log(`alt: ${e.altKey}`)
+  console.log(`ctrl: ${e.ctrlKey}`)
+  console.log(`meta: ${e.metaKey}`)
+  console.log(`shift: ${e.shiftKey}`)
+  console.log(`targte: ${e.target}`)
+  console.log(e.target) //it renders the html element when it's just the element 
+  console.log(`type: ${e.type}`)
+  console.log(`tang press: ${e.nativeEvent.tangentialPressure}`) //https://devdoc.net/web/developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tangentialPressure.html
+                                                                 //and that page has a see also to https://devdoc.net/web/developer.mozilla.org/en-US/docs/Web/API/Touch/force.html
 
