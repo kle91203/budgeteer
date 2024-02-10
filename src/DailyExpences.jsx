@@ -12,14 +12,8 @@ export default function ICanNameThisAnything() {
         {name: "groceries", amount: 30, datetime: 1234567896}
     ]
 
-    return (<>
-        {
-            expences.map((e) => 
-                <>
-                    <Expence amount={e.amount} key={e.datetime} category={e.name} description={e.name}   />
-                </>
-            )
-        }
-    </>)
-
+    return (
+        expences.map((e) => 
+            <Expence amount={e.amount} key={e.datetime} category={e.name} description={e.name} id={e.datetime} />
+    ))
 }

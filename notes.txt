@@ -1,6 +1,32 @@
 
 
 
+
+new notes are on top now
+
+
+
+-------- 2/9
+
+The "Warning: Each child in a list should have a unique “key” prop." error
+
+    Will NOT cause it
+        expences.map((e) => 
+            <Expence key={e.datetime}  />
+
+    WILL cause it (the fragment)
+        expences.map((e) => 
+            <>
+                <Expence key={e.datetime}  />
+            </>
+
+
+
+
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+
 Props is sthe only param. Destructure them for convenience
 
 can't use key as a prop

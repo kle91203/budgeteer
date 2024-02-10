@@ -13,14 +13,23 @@ export default function Expence({amount, description, id, category}) {
         {            key: 'clothing',            text: 'Clothing',            value: 'clothing'        },
     ]
 
+    const handleChange = (e, {id, value}) => {
+      console.log(`${id} ${value}`)
+    }
 
     return (
 		<div>
-			<span>{amount}</span> <span>{description}</span> <FormSelect
+      {id}
+			<span>{amount}</span> <span>{description}</span> 
+        <FormSelect
 						fluid
+            id={id + ""}
 						value={category}
 						options={categories}
 						placeholder='Category'
+            //
+            // What type is x?
+            onChange={(event, x) => handleChange(event, x)}
 					/>
 		</div>
     )
