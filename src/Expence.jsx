@@ -1,36 +1,26 @@
-import { Select, Form, Grid, FormSelect  } from 'semantic-ui-react'
+import Select from 'react-select';
 
 export default function Expence({amount, description, id, category}) {
-
     var categories = [
-        {            key: 'gas',           text: 'Gas',            value: 'gas'},
-        {            key: 'electricity',            text: 'Electricity',            value: 'electricity'        },
-        {            key: 'groceries',            text: 'Groceries',            value: 'groceries'        },
-        {            key: 'fuel',            text: 'Fuel',            value: 'fuel'        },
-        {            key: 'lunch',            text: 'Lunch',            value: 'lunch'        },
-        {            key: 'soda',            text: 'Soda',            value: 'soda'        },
-        {            key: 'movies',            text: 'Movies',            value: 'movies'        },
-        {            key: 'clothing',            text: 'Clothing',            value: 'clothing'        },
+      {label: 'Gas', value: 'gas'},
+      {label: 'Electricity', value: 'electricity'},
+      {label: 'Groceries', value: 'groceries'},
+      {label: 'Fuel', value: 'fuel'},
+      {label: 'Lunch', value: 'lunch'},
+      {label: 'Soda', value: 'soda'},
+      {label: 'Movies', value: 'movies'},
+      {label: 'Clothing', value: 'clothing'},
     ]
 
-    const handleChange = (e, {id, value}) => {
-      console.log(`${id} ${value}`)
+    const handleChange = (e, id) => {
+      console.log(`${id} ${JSON.stringify(e)}`)
     }
 
     return (
 		<div>
       {id}
 			<span>{amount}</span> <span>{description}</span> 
-        <FormSelect
-						fluid
-            id={id + ""}
-						value={category}
-						options={categories}
-						placeholder='Category'
-            //
-            // What type is x?
-            onChange={(event, x) => handleChange(event, x)}
-					/>
+        <Select options={categories} placeholder="Select an option" onChange={event => handleChange(event, id)} />;
 		</div>
     )
 }
