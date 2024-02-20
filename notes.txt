@@ -6,7 +6,10 @@ trying react-select (apparently most popular)
 This is good. I like this. It looks good and it works.
 How do I lay this out? Let's use flex.
 ----- Wanted to add the ability to actually fetch my data from the bank today. Didn't get to that.
-
+instead of automating fetching the data with puppeteer I'll download it manually and write code for it to load it
+    do get all the details i'll need to download it as csv and ofx 
+    csv's have pending transactions -- that's very important to me
+    put some time into remembering how th ofx file is structured -- it has an ID for each transaction!
 
 
 
