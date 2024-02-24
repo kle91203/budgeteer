@@ -1,3 +1,10 @@
+
+Wed 2/21
+Reading the files from the browser is not going to work. I'm going to create an api that will handle that.
+
+
+
+
 Mon 2/19
 i'm removing semantic ui. There's a react-dropdown package. I'm going to do it with pure react.
     didn't work
