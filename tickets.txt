@@ -1,6 +1,0 @@
-tickets
-
-WILL NOT DO
-    id={id + ""} -- what if id is null or nan or undefined? it will probably be ... the bigger problem is how did we get one of those as an id from the back end -- out of scope -- focus on react, not a production grade app
-
-
