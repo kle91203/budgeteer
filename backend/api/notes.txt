@@ -1,0 +1,57 @@
+
+
+
+Fri 2/23 and Sat 2/24
+This was all C#, no react, but i think that's fine, that's something I need to improve on too.
+Parse the transaction files from the bank -- csv and ofx formats
+save to mongo
+the csv processing is clunky. my description field has commas in it sometimes. all my fields, even date and numeric fields, are strings. i'm redoing it
+    let's use an existing util
+        What is DataPipeline using?
+            - nothing in their dependencies
+            - oh, they're just doing string spits. I guess there's a contract with the customer that there can't be strings in them. won't work for me
+        CsvHelper
+            - has enough stars on github. probably trustworthy.
+            - have to be careful. If there's anything malicious in this I'm responsible. I'll remove all the write functionality. And look at all the imports. 
+            - taking too much time. not worth it.
+    faster to write my own
+    this time i'm going to do TDD. I tried using debug and writeline last time. too cumbersome.
+    is there something like ncrunch for VS Code? (helpdesk still hasn't beeing able to get my visual studio license problem figured out)
+        https://samelamin.github.io/2016/03/14/TDD-on-VSCode/ -- too old. Doesn't work.
+        https://gavindraper.com/2020/05/27/VS-Code-Continious-Testing/ -- it's good, it adds indicators in the gutter for code coverage but the watch functionality doesn't work. still good enough that i modified it and just run it every time. I can to TDD now.
+    Using XUnit to take advantage of Theory and InlineData
+    I think a factory constructor (or whatever it's called) fits better. Migrating to that.
+    Need to move more logic into the model. There's too much knowledge about the inner details of the transaction in the file processing code.
+    Can't get init working where it has a body instead of a single line. Workaround: call a function that contains the body.
+
+
+
+
+
+
+
+
+
+
+dotnet new react -- creates a SPA
+
+dotnet add aspdotnet_webapp.csproj package NSwag.AspNetCore
+
+dotnet new webapp -- this one is Blazor pages. It worked half way. I got the "Not Found /swagger/{documentName}/swagger.json" error on the swagger page
+
+then add react -- didn't get to this point
+
+
+------------------------------------
+
+https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio-code
+
+dotnet new webapi --use-controllers -o TodoApi
+cd TodoApi
+dotnet add package Microsoft.EntityFrameworkCore.InMemory
+code -r ../TodoApi
+
+works!
+    and add my own budget controller
+    added model
+    modified endpoint to accept an arg
