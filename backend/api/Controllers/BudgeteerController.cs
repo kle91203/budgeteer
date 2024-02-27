@@ -2,23 +2,24 @@ using Api.Models;
 using Edwards.Kevin.Budgeteer.Models;
 using Edwards.Kevin.Budgeteer.Utils;
 using Microsoft.AspNetCore.Mvc;
+// ReSharper disable CheckNamespace
+// ReSharper disable ConvertToPrimaryConstructor
 
-namespace TodoApi.Controllers;
+namespace Edwards.Kevin.Budgeteer.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class BudgeteerController : ControllerBase
 {
-    private readonly ILogger<BudgeteerController> Logger;
-    private readonly IMongoDbClient MongoClient;
-    private readonly string DOWNLOAD_PATH = "/Users/kevin.edwards/Documents/Personal/Finance/America First/Transactions/";
-    private readonly IUtils Utils;
+    private const string DownloadPath = "/Users/kevin.edwards/Documents/Personal/Finance/America First/Transactions/";
 
-    public BudgeteerController(ILogger<BudgeteerController> logger, IMongoDbClient mongoClient, IUtils utils)
+    private readonly IMongoDbClient _mongoClient;
+    private readonly IUtils _utils;
+
+    public BudgeteerController(IMongoDbClient mongoClient, IUtils utils)
     {
-        Logger = logger;
-        MongoClient = mongoClient;
-        Utils = utils;
+        _mongoClient = mongoClient;
+        _utils = utils;
     }
 
 
@@ -26,13 +27,13 @@ public class BudgeteerController : ControllerBase
     [Route("MigrateDownload")]
     public IActionResult MigrateDownload()
     {
-        InnerMigrateDownload(DOWNLOAD_PATH);
+        InnerMigrateDownload(DownloadPath);
         return new OkResult();
     }
 
     public void InnerMigrateDownload(string dirPath)
     {
-        var filePaths = Utils.GetFiles(dirPath);
+        var filePaths = _utils.GetFiles(dirPath);
         foreach (var filePath in filePaths)
             MigrateFile(filePath);
     }
@@ -41,30 +42,29 @@ public class BudgeteerController : ControllerBase
     {
         if (filePath.EndsWith("csv"))
             MigrateCsvFile(filePath);
-        // if (filePath.EndsWith("ofx"))
-        //     MigrateOfxFile(filePath);
+        if (filePath.EndsWith("ofx"))
+            MigrateOfxFile(filePath);
     }
 
     private void MigrateCsvFile(string filePath)
     {
-        var fileLines = Utils.LoadFile(filePath);
-        List<CsvTransaction> transactions = new List<CsvTransaction>();
-        foreach(string fileLine in fileLines)
+        var fileLines = _utils.LoadFile(filePath);
+        var transactions = new List<CsvTransaction>();
+        foreach(var fileLine in fileLines)
             transactions.Add(new CsvTransaction(fileLine));
-        foreach(CsvTransaction transaction in transactions)
+        foreach(var transaction in transactions)
             if (transaction.IsValid && transaction.IsPendingTransaction)
-                MongoClient.InsertOne(transaction);
+                _mongoClient.InsertOne(transaction);
     }
 
 
     private void MigrateOfxFile(string fileName)
     {
-        string? line;
         try
         {
-            using StreamReader sr = new StreamReader(fileName);
-            line = sr.ReadLine();
-            OfxTransaction transaction = new OfxTransaction();
+            using var sr = new StreamReader(fileName);
+            var line = sr.ReadLine();
+            var transaction = new OfxTransaction();
             while (line != null)
             {
                 if (IsTransactionStart(line))
@@ -83,10 +83,10 @@ public class BudgeteerController : ControllerBase
         }
     }
 
-    private bool IsTransactionStart(string line) => line.StartsWith("<STMTTRN>");
-    private bool IsTransactionEnd(string line) => line.StartsWith("</STMTTRN>");
+    private static bool IsTransactionStart(string line) => line.StartsWith("<STMTTRN>");
+    private static bool IsTransactionEnd(string line) => line.StartsWith("</STMTTRN>");
 
-    private bool IsElementWeCareAbout(string line)
+    private static bool IsElementWeCareAbout(string line)
     {
         return 
             line.StartsWith("<TRNTYPE>") || 
@@ -99,12 +99,12 @@ public class BudgeteerController : ControllerBase
 
     //todo: how do you put the id into the route? use the id to control what gets returned
     [HttpGet]
-    [Route("GetExpences/{dataSetId}")]
-    public IEnumerable<Expence> Get(int dataSetId)
+    [Route("GetExpenses/{dataSetId:int}")]
+    public IEnumerable<Expense> Get(int dataSetId)
     {
-        var dataSet1 = new List<Expence> {
+        var dataSet1 = new List<Expense> {
             new (1, 8500, Category.Electricity, "whatevs"),
-            new (2, 5299, Category.Restauraunts, "don't care"),
+            new (2, 5299, Category.Restaurants, "don't care"),
             new (3, 20084, Category.Groceries, "doesn't matter"),
             new (4, 10022, Category.Groceries, "meh"),
             new (5, 5203, Category.Shopping, "wat"),

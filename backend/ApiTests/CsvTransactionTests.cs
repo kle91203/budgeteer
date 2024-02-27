@@ -1,6 +1,7 @@
 using Api.Models;
+// ReSharper disable CheckNamespace
 
-namespace Tests;
+namespace Edwards.Kevin.Budgeteer.Models.Tests;
 
 public class CsvTransactionTests
 {

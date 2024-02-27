@@ -3,33 +3,34 @@ using Edwards.Kevin.Budgeteer.Utils;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using TodoApi.Controllers;
+// ReSharper disable CheckNamespace
 
-namespace Tests;
+namespace Edwards.Kevin.Budgeteer.Models.Tests;
 
 public class FileProcessingTests
 {
     [Fact]
     public void HappyPath_SavesFileLinesToDatabase()
     {
-        string[] fileLines = new string[] {
+        var fileLines = new[] {
             "\"Date\",\"No.\",\"Description\",\"Debit\",\"Credit\"",
             "\"2/19/2024\",\"\",\"Pending - 02/14 - PAPA MURPHY'S UT069 OL\",\"46.05\",\"\"",
             "\"2/14/2024\",\"\",\"Walmart Refund\",\"\",\"23.44\""
         };
-        Mock<IUtils> utilsMock = new Mock<IUtils>();
+        var utilsMock = new Mock<IUtils>();
         utilsMock
-            .Setup(u => u.GetFiles(Moq.It.IsAny<string>()))
-            .Returns(new string[] {"a.csv"});
+            .Setup(u => u.GetFiles(It.IsAny<string>()))
+            .Returns(["a.csv"]);
         utilsMock
-            .Setup(u => u.LoadFile(Moq.It.IsAny<string>()))
+            .Setup(u => u.LoadFile(It.IsAny<string>()))
             .Returns(fileLines);
-        Mock<IMongoDbClient> mongoClientMock = new Mock<IMongoDbClient>();
+        var mongoClientMock = new Mock<IMongoDbClient>();
         var controller = new BudgeteerController(NullLogger<BudgeteerController>.Instance, mongoClientMock.Object, utilsMock.Object);
 
         controller.InnerMigrateDownload("some/file/path");
 
-        utilsMock.Verify(u => u.GetFiles(Moq.It.IsAny<string>()), Times.Once());
-        mongoClientMock.Verify(m => m.InsertOne(Moq.It.IsAny<CsvTransaction>()), Times.Once());
+        utilsMock.Verify(u => u.GetFiles(It.IsAny<string>()), Times.Once());
+        mongoClientMock.Verify(m => m.InsertOne(It.IsAny<CsvTransaction>()), Times.Once());
     }
 
     [Fact]
