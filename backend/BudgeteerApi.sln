@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgeteerApi", "./api/BudgeteerApi.csproj", "{89BDCFDA-1CE2-414D-9E17-ACFAAC6A8E28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "api\Api.csproj", "{89BDCFDA-1CE2-414D-9E17-ACFAAC6A8E28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTests", "./apitests/Tests.csproj", "{F123751C-1B77-45AB-8C91-B53F630D312D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTests", "apitests\ApiTests.csproj", "{F123751C-1B77-45AB-8C91-B53F630D312D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

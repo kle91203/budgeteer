@@ -1,6 +1,6 @@
 using Edwards.Kevin.Budgeteer.Models;
+using Edwards.Kevin.Budgeteer.Utils;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 
 namespace TodoApi.Controllers;
 
@@ -8,20 +8,16 @@ namespace TodoApi.Controllers;
 [Route("[controller]")]
 public class BudgeteerController : ControllerBase
 {
-    private readonly ILogger<BudgeteerController> _logger;
+    private readonly ILogger<BudgeteerController> Logger;
+    private readonly IMongoDbClient MongoClient;
     private readonly string DOWNLOAD_PATH = "/Users/kevin.edwards/Documents/Personal/Finance/America First/Transactions/";
-    private readonly string MONGO_DB_CONECTION_STRING = "mongodb://admin:M4ch1n31Q@localhost:27017";
-    private readonly IMongoCollection<CsvTransaction> expencesCollection;
+    private readonly IUtils Utils;
 
-    public BudgeteerController(ILogger<BudgeteerController> logger)
+    public BudgeteerController(ILogger<BudgeteerController> logger, IMongoDbClient mongoClient, IUtils utils)
     {
-        _logger = logger;
-
-        var client = new MongoClient(MONGO_DB_CONECTION_STRING);
-        expencesCollection = client.GetDatabase("Budgeteer").GetCollection<CsvTransaction>("Expences");
-        // var filter = Builders<BsonDocument>.Filter.Eq("title", "Back to the Future");
-        // var document = collection.Find(filter).First();
-        // Console.WriteLine(document);
+        Logger = logger;
+        MongoClient = mongoClient;
+        Utils = utils;
     }
 
 
@@ -29,76 +25,36 @@ public class BudgeteerController : ControllerBase
     [Route("MigrateDownload")]
     public IActionResult MigrateDownload()
     {
-
-        InnerMigrateDownload();
-
+        InnerMigrateDownload(DOWNLOAD_PATH);
         return new OkResult();
     }
 
-    public void InnerMigrateDownload()
+    public void InnerMigrateDownload(string dirPath)
     {
-        var fileNames = GetFiles();
-        foreach (var fileName in fileNames)
-        {
-            Console.WriteLine($"Migrating {fileName}");
-            MigrateFile(fileName);
-            Console.WriteLine($"Migrated {fileName}");
-        }
+        var filePaths = Utils.GetFiles(dirPath);
+        foreach (var filePath in filePaths)
+            MigrateFile(filePath);
     }
 
-    private void MigrateFile(string fileName)
+    private void MigrateFile(string filePath)
     {
-        if (fileName.EndsWith("csv"))
-            MigrateCsvFile(fileName);
-        // if (fileName.EndsWith("ofx"))
-        //     MigrateOfxFile(fileName);
+        if (filePath.EndsWith("csv"))
+            MigrateCsvFile(filePath);
+        // if (filePath.EndsWith("ofx"))
+        //     MigrateOfxFile(filePath);
     }
-    private void MigrateCsvFile(string fileName)
+
+    private void MigrateCsvFile(string filePath)
     {
-        string? line;
-        try
-        {
-
-
-            using var sr = new StreamReader(fileName);
-            // using var reader = new StreamReader(fileName);
-            // using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            // {
-            //     var records = csv.GetRecords<CsvTransaction>();
-            // }
-
-
-            line = sr.ReadLine();
-            while (line != null)
-            {
-                var fields = line.Split("\",\"");
-                if (fields[0] == "Date")
-                {
-                    line = sr.ReadLine();
-                    continue;
-                }
-                var csvTransaction = new CsvTransaction(fields);
-                if (csvTransaction.Description.StartsWith("Pending - "))
-                {
-                    Console.WriteLine(csvTransaction);
-                    try 
-                    {
-                        expencesCollection.InsertOne(csvTransaction);
-                    }
-                    catch(Exception e) 
-                    {
-                        Console.WriteLine(e);
-                        //TODO return info to front end on which ones failed
-                    }
-                }
-                line = sr.ReadLine();
-            }
-        }
-        catch(Exception e)
-        {
-            Console.WriteLine("Exception: " + e.Message);
-        }
+        var fileLines = Utils.LoadFile(filePath);
+        List<CsvTransaction> transactions = new List<CsvTransaction>();
+        foreach(string fileLine in fileLines)
+            transactions.Add(new CsvTransaction(fileLine));
+        foreach(CsvTransaction transaction in transactions)
+            if (transaction.IsValid && transaction.IsPendingTransaction)
+                MongoClient.InsertOne(transaction);
     }
+
 
     private void MigrateOfxFile(string fileName)
     {
@@ -128,8 +84,6 @@ public class BudgeteerController : ControllerBase
 
     private bool IsTransactionStart(string line) => line.StartsWith("<STMTTRN>");
     private bool IsTransactionEnd(string line) => line.StartsWith("</STMTTRN>");
-
-    private string[] GetFiles() => Directory.GetFiles(DOWNLOAD_PATH);
 
     private bool IsElementWeCareAbout(string line)
     {
