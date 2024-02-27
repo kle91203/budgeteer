@@ -1,6 +1,6 @@
+using Api.Models;
 using Edwards.Kevin.Budgeteer.Utils;
 using Microsoft.Extensions.Logging.Abstractions;
-using MongoDB.Driver;
 using Moq;
 using TodoApi.Controllers;
 

@@ -1,4 +1,4 @@
-using TodoApi.Controllers;
+using Api.Models;
 
 namespace Tests;
 
