@@ -7,7 +7,6 @@ public class CsvTransactionTests
 {
 
     [Theory]
-    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
     [InlineData("	")]
@@ -16,21 +15,21 @@ public class CsvTransactionTests
     [InlineData("\r\n")]
     public void EmptyNullAndWhiteSpaceInput(string csvLine)
     {
-        var transaction = CsvTransaction.createNew(csvLine);
+        var transaction = CsvTransaction.CreateNew(csvLine);
         Assert.False(transaction.IsValid);
     }
 
     [Fact]
     public void HeadersLine()
     {
-        var transaction = CsvTransaction.createNew("\"Date\",\"No.\",\"Description\",\"Debit\",\"Credit\"");
+        var transaction = CsvTransaction.CreateNew("\"Date\",\"No.\",\"Description\",\"Debit\",\"Credit\"");
         Assert.False(transaction.IsValid);
     }
 
     [Fact]
     public void ValidPendingDebitLine()
     {
-        var transaction = CsvTransaction.createNew("\"2/19/2024\",\"\",\"Pending - 02/14 - PAPA MURPHY'S UT069 OL\",\"46.05\",\"\"");
+        var transaction = CsvTransaction.CreateNew("\"2/19/2024\",\"\",\"Pending - 02/14 - PAPA MURPHY'S UT069 OL\",\"46.05\",\"\"");
         Assert.True(transaction.IsValid);
         Assert.True(transaction.IsPendingTransaction);
         Assert.Equal(DateTime.Parse("2/19/2024"), transaction.Date);
@@ -43,7 +42,7 @@ public class CsvTransactionTests
     [Fact]
     public void ValidCreditLine()
     {
-        var transaction = CsvTransaction.createNew("\"2/14/2024\",\"\",\"Walmart Refund\",\"\",\"23.44\"");
+        var transaction = CsvTransaction.CreateNew("\"2/14/2024\",\"\",\"Walmart Refund\",\"\",\"23.44\"");
         Assert.True(transaction.IsValid);
         Assert.False(transaction.IsPendingTransaction);
         Assert.Equal(DateTime.Parse("2/14/2024"), transaction.Date);

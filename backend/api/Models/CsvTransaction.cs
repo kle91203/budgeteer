@@ -2,28 +2,39 @@ namespace Api.Models;
 
 public class CsvTransaction
 {
-    public DateTime Date {get; init;}
-    public string CheckNumber {get; init;}
-    public string Description {get; init;}
-    public string TransactionType {get; set;}
-    public double Amount {get; init;}
-    public bool IsValid {get; init;}
-    public bool IsPendingTransaction {get; init;}
+    public DateTime Date {get;}
+    public string CheckNumber {get; private init; }
+    public string Description {get;}
+    public string TransactionType {get;}
+    public double Amount {get;}
+    public bool IsValid {get;}
+    public bool IsPendingTransaction {get;}
 
-    public static CsvTransaction createNew(string csvLine)
+    public static CsvTransaction CreateNew(string csvLine)
     {
         return new CsvTransaction(csvLine);
     }
 
     public CsvTransaction(string csvLine)
     {       
-        if (csvLine == null)
-            return;
         var fields = csvLine.Split("\",\"");
         if (fields.Length != 5)
+        {
+            Date = DateTime.MinValue;
+            CheckNumber = "";
+            Description = "";
+            TransactionType = "None";
             return;
+        }
+
         if (fields[0] == "\"Date")
+        {
+            Date = DateTime.MinValue;
+            CheckNumber = "";
+            Description = "";
+            TransactionType = "None";
             return;
+        }
 
         IsValid = true;
 
@@ -35,7 +46,7 @@ public class CsvTransaction
         if (fields[3].Length > 2)
         {
             TransactionType = "Debit";
-            Amount = Double.Parse(fields[3]);
+            Amount = double.Parse(fields[3]);
         }
         else
         {
@@ -44,21 +55,16 @@ public class CsvTransaction
         }
     }
 
-    public CsvTransaction(string[] fields)
+    private static DateTime ProcessDate(string value) 
     {
-        throw new Exception("Use the other ");
-    }
-
-    private DateTime ProcessDate(string value) 
-    {
-        var scrubbed = value.Substring(1);
+        var scrubbed = value[1..];
         return DateTime.Parse(scrubbed);
     }
 
-    private double ProcessCredit(string value) 
+    private static double ProcessCredit(string value) 
     {
-        var scrubbed = value.Substring(0, value.Length - 1);
-        return Double.Parse(scrubbed);
+        var scrubbed = value[..^1];
+        return double.Parse(scrubbed);
     }
 
     public override string ToString()

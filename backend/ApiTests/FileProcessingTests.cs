@@ -1,8 +1,7 @@
 using Api.Models;
+using Edwards.Kevin.Budgeteer.Controllers;
 using Edwards.Kevin.Budgeteer.Utils;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using TodoApi.Controllers;
 // ReSharper disable CheckNamespace
 
 namespace Edwards.Kevin.Budgeteer.Models.Tests;
@@ -25,7 +24,7 @@ public class FileProcessingTests
             .Setup(u => u.LoadFile(It.IsAny<string>()))
             .Returns(fileLines);
         var mongoClientMock = new Mock<IMongoDbClient>();
-        var controller = new BudgeteerController(NullLogger<BudgeteerController>.Instance, mongoClientMock.Object, utilsMock.Object);
+        var controller = new BudgeteerController(mongoClientMock.Object, utilsMock.Object);
 
         controller.InnerMigrateDownload("some/file/path");
 
@@ -36,14 +35,14 @@ public class FileProcessingTests
     [Fact]
     public void HeadersLine()
     {
-        var transaction = CsvTransaction.createNew("\"Date\",\"No.\",\"Description\",\"Debit\",\"Credit\"");
+        var transaction = CsvTransaction.CreateNew("\"Date\",\"No.\",\"Description\",\"Debit\",\"Credit\"");
         Assert.False(transaction.IsValid);
     }
 
     [Fact]
     public void ValidPendingDebitLine()
     {
-        var transaction = CsvTransaction.createNew("\"2/19/2024\",\"\",\"Pending - 02/14 - PAPA MURPHY'S UT069 OL\",\"46.05\",\"\"");
+        var transaction = CsvTransaction.CreateNew("\"2/19/2024\",\"\",\"Pending - 02/14 - PAPA MURPHY'S UT069 OL\",\"46.05\",\"\"");
         Assert.True(transaction.IsValid);
         Assert.True(transaction.IsPendingTransaction);
         Assert.Equal(DateTime.Parse("2/19/2024"), transaction.Date);
@@ -56,7 +55,7 @@ public class FileProcessingTests
     [Fact]
     public void ValidCreditLine()
     {
-        var transaction = CsvTransaction.createNew("\"2/14/2024\",\"\",\"Walmart Refund\",\"\",\"23.44\"");
+        var transaction = CsvTransaction.CreateNew("\"2/14/2024\",\"\",\"Walmart Refund\",\"\",\"23.44\"");
         Assert.True(transaction.IsValid);
         Assert.False(transaction.IsPendingTransaction);
         Assert.Equal(DateTime.Parse("2/14/2024"), transaction.Date);
